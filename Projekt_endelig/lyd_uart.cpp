@@ -9,7 +9,7 @@
 *************************************************/
 #include <avr/io.h>
 #include <stdlib.h>
-#include "lyd_uart"
+#include "lyd_uart.h"
 #include <util/delay.h>
 // Constants
 #define XTAL 16000000

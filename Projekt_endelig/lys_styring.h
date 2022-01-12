@@ -7,6 +7,7 @@
 
 void initLights();
 void toggleFront();
+void onFront();
 void driveRear();
 void brakeRearOn();
 void brakeRearOff();

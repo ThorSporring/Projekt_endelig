@@ -4,8 +4,8 @@
 #include <avr/interrupt.h>
 #include <avr/io.h>
 #include <util/delay.h>
-//#include <RH_ASK.h>
-//#include <SPI.h>
+#include <RH_ASK.h>
+#include <SPI.h>
 #include "Timer3_driver.h"
 #include "driveControl.h"
 #include "motor.h"
@@ -20,19 +20,20 @@
 #define TIMER_N 53036						//Timer trappe værdi. 
 
 //*******************************************************************************//
-/****************************************************************/
-// RH_ASK rfDriver;							//Reciever driver objekt
+RH_ASK rfDriver;							//Reciever driver objekt
 volatile unsigned char reflexCounter = 0;	//Global variable for placement of car
 volatile int hold = -1;
 volatile bool state = true;					//Bool state used to control the variable in interrupt routines
 /****************************************************************/
+// LOCAL FUNCTIONS
 void initPortForInt();						//Initialize interrupts
 /****************************************************************/
 
 
+
 //interrupt rutine for the first reflex
 //The routine starts the timer and adds 1 to reflexCounter
-ISR(INT0_vect)
+void INT0Handler()
 {
 	if (state)
 	{
@@ -44,7 +45,7 @@ ISR(INT0_vect)
 
 //interrupt rutine for the second reflex
 //The routine starts the timer and adds 1 to reflexCounter
-ISR(INT1_vect)
+void INT1Handler()
 {
 	if (state)
 	{
@@ -84,11 +85,12 @@ void setup()
 {
 	Serial.begin(9600);
 	//init reciever
-	//rfDriver.init();
+	rfDriver.init();
 	
 	//init ports for interrupts
 	initPortForInt();
-	
+	attachInterrupt(digitalPinToInterrupt(21), INT0Handler, RISING);
+	attachInterrupt(digitalPinToInterrupt(20), INT1Handler, RISING);
 	//init timer for reflex
 	initTimer();
 	
@@ -194,8 +196,12 @@ void initPortForInt()
 	//Pin 22 (PA0) benyttes til Rocket_switch. Bestemmelse af driveControl eller remoteControl
 	//initialise interrupt
 	//Enable INT1, INT0 interrupt
-	EIMSK |= 0b00000011;
+	
+	//EIMSK |= 0b00000011;
+	
 	//Enable rising edge interrupt request for INT 1 and INT 0						
-	EICRA |= 0b00001111;
+	
+	//EICRA |= 0b00001111;
+	
 	//Init Timer interrupts og prescaler
 }

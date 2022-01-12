@@ -18,6 +18,7 @@ void driveControl(unsigned int reflexCounter)
 	{
 	case 1: //START
 		soundStart();
+		_delay_ms(200);
 		onFront();
 		_delay_ms(100);
 		toggleFront();
@@ -25,14 +26,17 @@ void driveControl(unsigned int reflexCounter)
 		toggleFront();
 		_delay_ms(100);
 		toggleFront();
+		_delay_ms(300);
+		toggleFront();
 		driveRear();
-		forward(35,0,0);
+		forward(50,0,0);
 		
 		break;
 
 	case 2: //FØRSTE EFTER STARTLINJE
-		forward(65,0,0);
 		soundReflex();
+		forward(80,1,0.7);
+		
 		//break;
 
 	case 3: //LIGE FOR BAKKEN
@@ -57,7 +61,7 @@ void driveControl(unsigned int reflexCounter)
 
 	case 5:								//FØRSTE EFTER BAKKEN
 		soundReflex();
-		forward(40,0,0);
+		forward(60,0,0);
 		
 		//forward(100);
 		break;
@@ -81,23 +85,25 @@ void driveControl(unsigned int reflexCounter)
 
 	case 9:								//Kør forlæns igen
 		soundReflex();
-		brakeRearOn();
-		brakeRearOff();
-		stop();
-		forward(100,0,0);				
+				
 		break;
 
 	case 10:
 		soundReflex();
-
+		brakeRearOn();
+		brakeRearOff();
+		stop();
+		forward(100, 0, 0);
 		break;
 
 	case 11:
 		soundReflex();
 		break;
-
-	case 12:								//Målstrej
-		stop();
+	case 12:
+		soundReflex();
+		break;
+	case 13:								//Målstrej
+		soundEnd();
 		backward(100, 0, 0);
 		stop();
 		toggleFront();

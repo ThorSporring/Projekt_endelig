@@ -40,6 +40,11 @@ void toggleFront()
 	}
 }
 
+void onFront()
+{
+	PORTB = 0b00100000;
+}
+
 void brakeRearOn()
 {
 	TCCR0A = 0b00000000;//disable PWM timer, and Enable single high out bit7

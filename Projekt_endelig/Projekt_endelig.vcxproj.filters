@@ -27,7 +27,10 @@
     <ClCompile Include="Timer3_driver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\OneDrive - Aarhus Universitet\Dokumenter\Visual studio source files\repos\LAB_10_ar\LAB_10_ar\led.cpp">
+    <ClCompile Include="lyd_uart.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lys_styring.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -44,7 +47,10 @@
     <ClInclude Include="__vm\.Projekt_endelig.vsarduino.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\OneDrive - Aarhus Universitet\Dokumenter\Visual studio source files\repos\LAB_10_ar\LAB_10_ar\led.h">
+    <ClInclude Include="lyd_uart.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lys_styring.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
