@@ -114,7 +114,7 @@ void setup()
 
 void loop()
 {
-
+	//KØR BANEN
 	while (1)
 	{
 		if (hold != reflexCounter)
@@ -125,6 +125,10 @@ void loop()
 			Serial.print(hold);
 		}
 	}
+	/*
+	
+	/*************************************/
+	// TEST TIL REMOTE CONTROL
 	/*
 	while (1)
 	{
