@@ -4,12 +4,15 @@
 #include <avr/interrupt.h>
 #include <avr/io.h>
 #include <util/delay.h>
-#include <RH_ASK.h>
-#include <SPI.h>
+//#include <RH_ASK.h>
+//#include <SPI.h>
 #include "Timer3_driver.h"
 #include "driveControl.h"
 #include "motor.h"
-#include "led.h"
+//#include "led.h"
+#include "lyd_uart.h"
+#include "lys_styring.h"
+
 
 
 #define ROCKET_SWITCH 22					//Rocket switch PIN
@@ -18,18 +21,18 @@
 
 //*******************************************************************************//
 /****************************************************************/
-RH_ASK rfDriver;							//Reciever driver objekt
+// RH_ASK rfDriver;							//Reciever driver objekt
 volatile unsigned char reflexCounter = 0;	//Global variable for placement of car
+volatile int hold = -1;
 volatile bool state = true;					//Bool state used to control the variable in interrupt routines
 /****************************************************************/
-void initportforint();
+void initPortForInt();						//Initialize interrupts
 /****************************************************************/
 
 
 //interrupt rutine for the first reflex
 //The routine starts the timer and adds 1 to reflexCounter
-
-ISR(INT1_vect)
+ISR(INT0_vect)
 {
 	if (state)
 	{
@@ -41,7 +44,7 @@ ISR(INT1_vect)
 
 //interrupt rutine for the second reflex
 //The routine starts the timer and adds 1 to reflexCounter
-ISR(INT3_vect)
+ISR(INT1_vect)
 {
 	if (state)
 	{
@@ -60,40 +63,65 @@ ISR(TIMER3_OVF_vect)
 }
 
 
+// Interrupt/timer routines for light control
+ISR(TIMER1_OVF_vect)
+{
+	PORTB = PINB & ~0b01000000;
+	TCCR1B = 0b00000000; //Stop timer 1 (no clock)
+	TIFR1 = 0b00000001;  //Reset Timer 1 Overflow flag
+	driveRear(); //call normal lights
+	Serial.print("Hej");
+}
+
+ISR(TIMER0_COMPA_vect)
+{
+	PORTB = PINB ^ 0b01000000;  //turn lights on on compare
+}
+
+
 //Setup of all ports and drivers
 void setup()
 {
+	Serial.begin(9600);
 	//init reciever
-	rfDriver.init();
-	//Init portB for leds on shield
-	initLEDport();
+	//rfDriver.init();
+	
 	//init ports for interrupts
 	initPortForInt();
+	
 	//init timer for reflex
 	initTimer();
+	
 	//Init motor control
 	initMotorPWMandToggle();
+	
 	//Init light control
+	initLights();
 	
 	//Init sound control
+	InitUART(9600, 8, 0);
+	volumeMax();
 	
 	//Init global interrupt
-	sei();		
-	Serial.begin(9600);
-	
-	//Led sequence that assures car is ready to go
-	initOkay();
+	sei();			
 	//make sure it starts at 0
 	reflexCounter = 0;
+	
 }
 
 
 void loop()
 {
+
 	while (1)
 	{
-		driveControl(reflexCounter);
-
+		if (hold != reflexCounter)
+		{
+			driveControl(reflexCounter);
+			hold++;
+			Serial.print(reflexCounter);
+			Serial.print(hold);
+		}
 	}
 	/*
 	while (1)
@@ -158,17 +186,16 @@ void initPortForInt()
 
 	//Pin 46 (PD3) benyttes til INT 3
 	//Pin 45 (PD2) benyttes til INT 2
-
 	DDRE = 0;
-
-
+	
 	//init PORT A pins til input
 	DDRA = 0;
+	
 	//Pin 22 (PA0) benyttes til Rocket_switch. Bestemmelse af driveControl eller remoteControl
 	//initialise interrupt
-	//Enable INT2, INT3 interrupt
-	EIMSK |= 0b00001100;
-	//Enable rising edge interrupt request for INT 2 and INT 3						
-	EICRA |= 0b11110000;
+	//Enable INT1, INT0 interrupt
+	EIMSK |= 0b00000011;
+	//Enable rising edge interrupt request for INT 1 and INT 0						
+	EICRA |= 0b00001111;
 	//Init Timer interrupts og prescaler
 }
