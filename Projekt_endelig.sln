@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.31702.278
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Projekt_endelig", "Projekt_endelig\Projekt_endelig.vcxproj", "{C5F80730-F44F-4478-BDAE-6634EFC2CA88}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Reciever tester", "Reciever tester\Reciever tester.vcxproj", "{9A59CD95-6DE4-4EE2-BBBD-766D4C53D2B5}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Reciever", "Reciever\Reciever.vcxproj", "{FCDE2BAE-0556-44F3-A0B8-72ED7A427AC0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Debug|x86.Build.0 = Debug|Win32
 		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Release|x86.ActiveCfg = Release|Win32
 		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Release|x86.Build.0 = Release|Win32
-		{9A59CD95-6DE4-4EE2-BBBD-766D4C53D2B5}.Debug|x86.ActiveCfg = Debug|Win32
-		{9A59CD95-6DE4-4EE2-BBBD-766D4C53D2B5}.Debug|x86.Build.0 = Debug|Win32
-		{9A59CD95-6DE4-4EE2-BBBD-766D4C53D2B5}.Release|x86.ActiveCfg = Release|Win32
-		{9A59CD95-6DE4-4EE2-BBBD-766D4C53D2B5}.Release|x86.Build.0 = Release|Win32
+		{FCDE2BAE-0556-44F3-A0B8-72ED7A427AC0}.Debug|x86.ActiveCfg = Debug|Win32
+		{FCDE2BAE-0556-44F3-A0B8-72ED7A427AC0}.Debug|x86.Build.0 = Debug|Win32
+		{FCDE2BAE-0556-44F3-A0B8-72ED7A427AC0}.Release|x86.ActiveCfg = Release|Win32
+		{FCDE2BAE-0556-44F3-A0B8-72ED7A427AC0}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

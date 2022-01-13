@@ -13,7 +13,10 @@
 #include "lyd_uart.h"
 #include "lys_styring.h"
 
-
+#define BUTTON1 3
+#define BUTTON2 4
+#define BUTTON3 5
+#define BUTTON4 6
 
 #define ROCKET_SWITCH 22					//Rocket switch PIN
 
@@ -84,11 +87,9 @@ ISR(TIMER0_COMPA_vect)
 void setup()
 {
 	Serial.begin(9600);
-	//init reciever
-	rfDriver.init();
-	
+
 	//init ports for interrupts
-	initPortForInt();
+	//initPortForInt();
 	attachInterrupt(digitalPinToInterrupt(21), INT0Handler, RISING);
 	attachInterrupt(digitalPinToInterrupt(20), INT1Handler, RISING);
 	//init timer for reflex
@@ -100,6 +101,8 @@ void setup()
 	//Init light control
 	initLights();
 	
+	//init reciever
+	rfDriver.init();
 	//Init sound control
 	InitUART(9600, 8, 0);
 	volumeMax();
@@ -115,7 +118,7 @@ void setup()
 void loop()
 {
 	//KØR BANEN
-	while (1)
+	/*while (0)
 	{
 		if (hold != reflexCounter)
 		{
@@ -124,62 +127,58 @@ void loop()
 			Serial.print(reflexCounter);
 			Serial.print(hold);
 		}
-	}
+	}*/
 	/*
 	
 	/*************************************/
 	// TEST TIL REMOTE CONTROL
-	/*
 	while (1)
 	{
-		
+		// Set buffer to size of expected message
 		uint8_t buf[9];
 		uint8_t buflen = sizeof(buf);
-	
-		// Check if received packet is correct size
 		if (rfDriver.recv(buf, &buflen))
 		{
+			const char speed[3] = { buf[0],buf[1],buf[2] };
+			int speedValue = atoi(speed);
+			int speedForward = speedValue - 200;
+			int speedBackward = 200 - speedValue;
 
-
-				// Message received with valid checksum
-				Serial.print("Message Received: ");
-				Serial.println((char*)buf);
-
-			unsigned char speed[3] = {buf[0],buf[1],buf[2]};
-			unsigned char buttonPressed[3] = { (buf[3] - '0'),(buf[4] - '0'), (buf[5] - '0') };
-			int sumOfSpeed = atoi(speed);
-			if (sumOfSpeed > 200)
+			if (speedValue > 210)
 			{
-				forward((sumOfSpeed-100)/2, 0, 0);
-				Serial.print("forward: ");
-				Serial.print(sumOfSpeed);
-				Serial.print("\n");
+				forward(speedForward, 0, 0);
 			}
-			if (sumOfSpeed < 200)
+			else if (speedValue < 203 && 195 < speedValue)
 			{
-				backward((sumOfSpeed-100)/2, 0, 0);
-				Serial.print("backward: ");
-				Serial.print(sumOfSpeed);
-				Serial.print("\n");
+				stop();
 			}
-			for (int i = 0; i <= 2; i++)
+			else if (speedValue < 190)
 			{
-				Serial.print("Button nr. ");
-				Serial.print(i);
-				Serial.print("\n");
-				Serial.print(buttonPressed[i]);
-				Serial.print("\n");
+				backward(speedBackward, 0, 0);
 			}
+			Serial.print("\nForward speed: ");
+			Serial.print(speedForward);
+			Serial.print("\nBackward speed:");
+			Serial.print(speedBackward);
 
-			// Message received with valid checksum
-			Serial.print("Message Received: ");
-			for (int i = 0; i <= 8; i++)
+			if (buf[BUTTON1] - '0' == 1)
 			{
-				Serial.print(buf[i] - '0');
-				Serial.print(" ");
+				soundStart();
 			}
-		}*/
-
+			if (buf[BUTTON2] - '0' == 1)
+			{
+				soundReflex();
+			}
+			if (buf[BUTTON3] - '0' == 1)
+			{
+				soundEnd();
+			}
+			if (buf[BUTTON4] - '0' == 1)
+			{
+				toggleFront();
+			}
+		}
+	}
 }
 
 
