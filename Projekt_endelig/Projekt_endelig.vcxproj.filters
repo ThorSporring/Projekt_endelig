@@ -33,6 +33,9 @@
     <ClCompile Include="lys_styring.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="REMOTE_CONTROL.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="driveControl.h">
@@ -51,6 +54,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="lys_styring.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="REMOTE_CONTROL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

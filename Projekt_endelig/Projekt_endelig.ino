@@ -4,8 +4,7 @@
 #include <avr/interrupt.h>
 #include <avr/io.h>
 #include <util/delay.h>
-#include <RH_ASK.h>
-#include <SPI.h>
+#include "REMOTE_CONTROL.h"
 #include "Timer3_driver.h"
 #include "driveControl.h"
 #include "motor.h"
@@ -13,20 +12,23 @@
 #include "lyd_uart.h"
 #include "lys_styring.h"
 
-#define BUTTON1 3
-#define BUTTON2 4
-#define BUTTON3 5
-#define BUTTON4 6
+#define BUTTON1 0
+#define BUTTON2 1
+#define BUTTON3 2
+#define BUTTON4 3
 
 #define ROCKET_SWITCH 22					//Rocket switch PIN
 
 #define TIMER_N 53036						//Timer trappe værdi. 
 
 //*******************************************************************************//
-RH_ASK rfDriver;							//Reciever driver objekt
 volatile unsigned char reflexCounter = 0;	//Global variable for placement of car
 volatile int hold = -1;
 volatile bool state = true;					//Bool state used to control the variable in interrupt routines
+		
+REMOTE_CONTROL rcBil;							//Reciever driver objekt
+uint8_t buf[9];									// Set buffer to size of expected message
+uint8_t buflen = sizeof(buf);
 /****************************************************************/
 // LOCAL FUNCTIONS
 void initPortForInt();						//Initialize interrupts
@@ -102,7 +104,7 @@ void setup()
 	initLights();
 	
 	//init reciever
-	rfDriver.init();
+	rcBil.init();
 	//Init sound control
 	InitUART(9600, 8, 0);
 	volumeMax();
@@ -118,7 +120,7 @@ void setup()
 void loop()
 {
 	//KØR BANEN
-	/*while (0)
+	while (digitalRead(ROCKET_SWITCH) == 0)
 	{
 		if (hold != reflexCounter)
 		{
@@ -127,58 +129,40 @@ void loop()
 			Serial.print(reflexCounter);
 			Serial.print(hold);
 		}
-	}*/
+	}
 	/*
 	
 	/*************************************/
 	// TEST TIL REMOTE CONTROL
-	while (1)
+	while (digitalRead(ROCKET_SWITCH) == 1)
 	{
-		// Set buffer to size of expected message
-		uint8_t buf[9];
-		uint8_t buflen = sizeof(buf);
-		if (rfDriver.recv(buf, &buflen))
+		rcBil.setSpeedValue(buf,buflen);				//calculates and gets the value read from the reciever
+		//rcBil.setButton(buf);					//gets the button array
+		rcBil.setButton(buf);
+		rcBil.print();
+		rcBil.drive();							//executes the drive command
+
+		if (rcBil.buttonArray[BUTTON1] == true)
 		{
-			const char speed[3] = { buf[0],buf[1],buf[2] };
-			int speedValue = atoi(speed);
-			int speedForward = speedValue - 200;
-			int speedBackward = 200 - speedValue;
-
-			if (speedValue > 210)
-			{
-				forward(speedForward, 0, 0);
-			}
-			else if (speedValue < 203 && 195 < speedValue)
-			{
-				stop();
-			}
-			else if (speedValue < 190)
-			{
-				backward(speedBackward, 0, 0);
-			}
-			Serial.print("\nForward speed: ");
-			Serial.print(speedForward);
-			Serial.print("\nBackward speed:");
-			Serial.print(speedBackward);
-
-			if (buf[BUTTON1] - '0' == 1)
-			{
-				soundStart();
-			}
-			if (buf[BUTTON2] - '0' == 1)
-			{
-				soundReflex();
-			}
-			if (buf[BUTTON3] - '0' == 1)
-			{
-				soundEnd();
-			}
-			if (buf[BUTTON4] - '0' == 1)
-			{
-				toggleFront();
-			}
+			Serial.print("play sound");
+			soundStart();
 		}
+		if (rcBil.buttonArray[BUTTON2] == true)
+		{
+			soundReflex();
+		}
+		if (rcBil.buttonArray[BUTTON3] == true)
+		{
+			soundEnd();
+		}
+		if (rcBil.buttonArray[BUTTON4] == true)
+		{
+
+		}
+		
+		
 	}
+	reflexCounter = 0;
 }
 
 
