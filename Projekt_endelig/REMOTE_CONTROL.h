@@ -6,11 +6,11 @@ class REMOTE_CONTROL
 {
 public:
 	REMOTE_CONTROL();
-	void setSpeedForward();
-	void setSpeedBackward();
+	void calculateSpeedForward();
+	void calculateSpeedBackward();
 	void setButton(uint8_t *buf);
 	void setSpeedValue(uint8_t* buf, uint8_t buflen);
-	
+
 	int getSpeedForward();
 	int getSpeedBackward();
 	bool buttonArray[4];
