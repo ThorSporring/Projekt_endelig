@@ -17,6 +17,8 @@ void driveControl(unsigned int reflexCounter)
 	switch (reflexCounter)
 	{
 	case 1: //START
+		brakeRearOn();
+		brakeRearOff();
 		soundStart();
 		_delay_ms(200);
 		onFront();
@@ -41,17 +43,13 @@ void driveControl(unsigned int reflexCounter)
 
 	case 3: //LIGE FOR BAKKEN
 		soundReflex();
-		//backLightControl(100);		//tænder bremselys
-		//forward(50);				//bremser
-
-		//backLightControl(50);		//slukker bremselys
 		break;
 
 	case 4:							//TOPPEN AF BAKKEN
 		soundReflex();
 		
 		brakeRearOn();
-		brakeRearOn();
+		brakeRearOff();
 		stop();
 	
 		forward(15,0,0);
@@ -104,8 +102,11 @@ void driveControl(unsigned int reflexCounter)
 		break;
 	case 13:								//Målstrej
 		soundEnd();
+		brakeRearOn();
+		brakeRearOff();
 		backward(100, 0, 0);
 		stop();
+		_delay_ms(2000);
 		toggleFront();
 		rearOff();
 		break;

@@ -32,6 +32,7 @@ uint8_t buflen = sizeof(buf);
 /****************************************************************/
 // LOCAL FUNCTIONS
 void initPortForInt();						//Initialize interrupts
+void initSystem();
 /****************************************************************/
 
 
@@ -76,7 +77,6 @@ ISR(TIMER1_OVF_vect)
 	TCCR1B = 0b00000000; //Stop timer 1 (no clock)
 	TIFR1 = 0b00000001;  //Reset Timer 1 Overflow flag
 	driveRear(); //call normal lights
-	Serial.print("Hej");
 }
 
 ISR(TIMER0_COMPA_vect)
@@ -88,64 +88,43 @@ ISR(TIMER0_COMPA_vect)
 //Setup of all ports and drivers
 void setup()
 {
-	Serial.begin(9600);
-
-	//init ports for interrupts
-	//initPortForInt();
-	attachInterrupt(digitalPinToInterrupt(21), INT0Handler, RISING);
-	attachInterrupt(digitalPinToInterrupt(20), INT1Handler, RISING);
-	//init timer for reflex
-	initTimer();
-	
-	//Init motor control
-	initMotorPWMandToggle();
-	
-	//Init light control
-	initLights();
-	
-	//init reciever
-	rcBil.init();
-	//Init sound control
-	InitUART(9600, 8, 0);
-	volumeMax();
-	
-	//Init global interrupt
-	sei();			
-	//make sure it starts at 0
-	reflexCounter = 0;
-	
+	initSystem();
 }
 
 
 void loop()
 {
-	//KØR BANEN
+	//DRIVE CONTROL
 	while (digitalRead(ROCKET_SWITCH) == 0)
 	{
 		if (hold != reflexCounter)
 		{
 			driveControl(reflexCounter);
 			hold++;
-			Serial.print(reflexCounter);
-			Serial.print(hold);
 		}
 	}
-	/*
 	
 	/*************************************/
-	// TEST TIL REMOTE CONTROL
+	//REMOTE CONTROL
+	
+	rearOff();
+	rcBil.init();
+	
 	while (digitalRead(ROCKET_SWITCH) == 1)
 	{
+		
 		rcBil.setSpeedValue(buf,buflen);				//calculates and gets the value read from the reciever
-		//rcBil.setButton(buf);					//gets the button array
+												//gets the button array
 		rcBil.setButton(buf);
+		
+		rcBil.drive();									//executes the drive command
+		
 		rcBil.print();
-		rcBil.drive();							//executes the drive command
+		
 
 		if (rcBil.buttonArray[BUTTON1] == true)
 		{
-			Serial.print("play sound");
-			soundStart();
+			toggleFront();
 		}
 		if (rcBil.buttonArray[BUTTON2] == true)
 		{
@@ -153,16 +132,18 @@ void loop()
 		}
 		if (rcBil.buttonArray[BUTTON3] == true)
 		{
-			soundEnd();
+			soundCompliment();
 		}
 		if (rcBil.buttonArray[BUTTON4] == true)
 		{
-
+			soundStart();
 		}
 		
 		
 	}
+	rearOff();
 	reflexCounter = 0;
+	hold = 0;
 }
 
 
@@ -184,11 +165,36 @@ void initPortForInt()
 	//initialise interrupt
 	//Enable INT1, INT0 interrupt
 	
-	//EIMSK |= 0b00000011;
-	
-	//Enable rising edge interrupt request for INT 1 and INT 0						
-	
-	//EICRA |= 0b00001111;
+	attachInterrupt(digitalPinToInterrupt(21), INT0Handler, RISING);
+	attachInterrupt(digitalPinToInterrupt(20), INT1Handler, RISING);
 	
 	//Init Timer interrupts og prescaler
+}
+void initSystem()
+{
+	Serial.begin(9600);
+	//init ports for interrupts
+	initPortForInt();
+
+	//init timer for reflex
+	initTimer();
+
+	//Init motor control
+	initMotorPWMandToggle();
+
+	//Init light control
+	initLights();
+	
+
+	//init reciever
+	//Init sound control
+	InitUART(9600, 8, 0);
+	volumeMax();
+
+	//Init global interrupt
+	sei();
+	//make sure it starts at 0
+	reflexCounter = 0;
+
+
 }

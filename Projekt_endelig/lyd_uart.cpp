@@ -171,5 +171,17 @@ void soundEnd(void)
 	SendChar(0xEF);
 
 }
+void soundCompliment()
+{
+	SendChar(0x7E); // vælg lyd nr004
+	SendChar(0x03);
+	SendChar(0x00);
+	SendChar(0x00);
+	SendChar(0x04);
+	SendChar(0xFF);
+	SendChar(0xF9);
+	SendChar(0xEF);
+
+}
 
 /************************************************************************/

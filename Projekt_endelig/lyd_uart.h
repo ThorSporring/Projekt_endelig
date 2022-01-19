@@ -14,5 +14,6 @@ void SendInteger(int Tal);
 void soundStart();
 void soundReflex();
 void soundEnd();
+void soundCompliment();
 void volumeMax();
 /****************************************/

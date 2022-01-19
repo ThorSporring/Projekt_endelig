@@ -30,19 +30,19 @@ void interruptEnable()
 
 void toggleFront()
 {					//bit 6 used for front lights
-	if (PINB == PINB & ~0b0010000) //if Front are off
+	if (PINB == PINB & ~0b1000000) //if Front are off
 	{
-		PORTB = PINB ^ 0b00100000; //then turn them on
+		PORTB = PINB ^ 0b10000000; //then turn them on
 	}
 	else
 	{
-		PORTB = PINB & ~0b00100000; //else turn them off
+		PORTB = PINB & ~0b10000000; //else turn them off
 	}
 }
 
 void onFront()
 {
-	PORTB = 0b00100000;
+	PORTB = 0b10000000;
 }
 
 void brakeRearOn()
