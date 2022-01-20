@@ -19,13 +19,13 @@
 
 #define ROCKET_SWITCH 22					//Rocket switch PIN
 
-#define TIMER_N 53036						//Timer trappe værdi. 
+#define TIMER_N 53036						//Timer trappe vï¿½rdi.
 
 //*******************************************************************************//
 volatile unsigned char reflexCounter = 0;	//Global variable for placement of car
 volatile int hold = -1;
 volatile bool state = true;					//Bool state used to control the variable in interrupt routines
-		
+
 REMOTE_CONTROL rcBil;							//Reciever driver objekt
 uint8_t buf[9];									// Set buffer to size of expected message
 uint8_t buflen = sizeof(buf);
@@ -138,8 +138,8 @@ void loop()
 		{
 			soundStart();
 		}
-		
-		
+
+
 	}
 	rearOff();
 	reflexCounter = 0;
@@ -157,10 +157,10 @@ void initPortForInt()
 	//Pin 46 (PD3) benyttes til INT 3
 	//Pin 45 (PD2) benyttes til INT 2
 	DDRE = 0;
-	
+
 	//init PORT A pins til input
 	DDRA = 0;
-	
+
 	//Pin 22 (PA0) benyttes til Rocket_switch. Bestemmelse af driveControl eller remoteControl
 	//initialise interrupt
 	//Enable INT1, INT0 interrupt

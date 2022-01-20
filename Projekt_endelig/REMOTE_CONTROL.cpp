@@ -1,7 +1,7 @@
 #include "REMOTE_CONTROL.h"
 
 REMOTE_CONTROL::REMOTE_CONTROL()
-{ 
+{
     speedForward_ = 0;
     speedBackward_ = 0;
     speedValue_ = 0;
@@ -12,12 +12,12 @@ REMOTE_CONTROL::REMOTE_CONTROL()
     rfDriver_.init();
 }
 
-void REMOTE_CONTROL::setSpeedForward()
+void REMOTE_CONTROL::calculateSpeedForward()
 {
     speedForward_ = speedValue_ - 200;
 }
 
-void REMOTE_CONTROL::setSpeedBackward()
+void REMOTE_CONTROL::calculateSpeedBackward()
 {
     speedBackward_ = 200 - speedValue_;
 }
@@ -33,8 +33,8 @@ void REMOTE_CONTROL::setButton(uint8_t *buf)
       {
          buttonArray[i] = buttons_[i];
       }
-    
-    
+
+
 }
 
 void REMOTE_CONTROL::setSpeedValue(uint8_t * buf, uint8_t buflen)
@@ -74,8 +74,8 @@ void REMOTE_CONTROL::init()
 
 void REMOTE_CONTROL::drive()
 {
-    setSpeedBackward();
-    setSpeedForward();
+    calculateSpeedBackward();
+    calculateSpeedForward();
 
     if (speedValue_ > 210)
     {
